@@ -20,7 +20,7 @@ export function ObjectDetector() {
       formData.append("image", file);
 
       const response = await axios.post("https://api-gradtest.vercel.app/upload", formData);
-      
+      //
       const data = response.data;
       console.log("Predictions:", data.predictions);
       setPredictions(data.predictions);
