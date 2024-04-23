@@ -19,10 +19,17 @@ export function ObjectDetector() {
       const formData = new FormData();
       formData.append("image", file);
 
+      const startTime = new Date();
+
       const response = await axios.post("http://localhost:5000/upload", formData);
       
       const data = response.data;
       console.log("Predictions:", data.predictions);
+
+      const endTime = new Date();
+      const timeTaken = Number(endTime) - Number(startTime);
+      console.log("Time taken:", timeTaken, "ms");
+
       setPredictions(data.predictions);
     } catch (error) {
       console.error("Error occurred while fetching predictions:", error);
