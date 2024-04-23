@@ -3,8 +3,8 @@ import axios from "axios";
 
 interface Prediction {
   bbox: number[];
-  class: string;
-  score: number;
+  className: string;
+  probability: number;
 }
 
 export function ObjectDetector() {
@@ -50,7 +50,7 @@ export function ObjectDetector() {
             {predictions.map((prediction, index) => (
               <li
                 key={index}
-              >{`${prediction.class} - Score: ${prediction.score}`}</li>
+              >{`${prediction.className} - Score: ${prediction.probability}`}</li>
             ))}
           </ul>
         )}

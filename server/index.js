@@ -5,7 +5,7 @@ const cors = require("cors");
 const sharp = require("sharp");
 const tf = require("@tensorflow/tfjs");
 
-const cocoSsd = require("@tensorflow-models/coco-ssd");
+const mobilenet = require("@tensorflow-models/mobilenet");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -43,11 +43,11 @@ let model;
 
 async function loadModel() {
   try {
-    model = await cocoSsd.load({});
+    // Load MobileNet model
+    model = await mobilenet.load();
     console.log("Model loaded");
   } catch (err) {
     console.error("Failed to load model", err);
-    // Exit the process if model loading fails
     process.exit(1);
   }
 }
@@ -88,7 +88,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     ]);
 
     // Perform object detection
-    const predictions = await model.detect(imageTensor);
+    const predictions = await model.classify(imageTensor);
 
     console.log("Predictions:", predictions);
     const endTime = new Date();

@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@tensorflow-models/coco-ssd": "^2.2.3",
+    "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.18.0",
     "@tensorflow/tfjs-backend-cpu": "^4.18.0",
     "@tensorflow/tfjs-node": "4.18.0",
@@ -15,6 +16,7 @@
     "express": "^4.19.2",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.0",
-    "sharp": "^0.33.3"
+    "sharp": "^0.33.3",
+    "tfjs-yolo": "^0.0.4"
   }
 }
