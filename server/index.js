@@ -70,14 +70,22 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
     const startTime = new Date();
 
-    // Convert image buffer to tensor and resize
-    const { data, info } = await sharp(imageBuffer)
-      .resize(300)
+    // Resize images to a smaller size before detection
+    const resizedImage = await sharp(imageBuffer)
+      .resize({ width: 100, height: 100, fit: "inside" }) // Resize to a smaller size
+      .toBuffer();
+
+    // Convert resized image buffer to tensor
+    const { data, info } = await sharp(resizedImage)
       .raw()
       .toBuffer({ resolveWithObject: true });
 
     // Convert image data to tensor
-    const imageTensor = tf.tensor3d(data, [info.height, info.width, info.channels]);
+    const imageTensor = tf.tensor3d(data, [
+      info.height,
+      info.width,
+      info.channels,
+    ]);
 
     // Perform object detection
     const predictions = await model.detect(imageTensor);
@@ -96,10 +104,12 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 });
 
 // Start the server only after the model is loaded
-loadModel().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+loadModel()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to load model:", err);
   });
-}).catch(err => {
-  console.error('Failed to load model:', err);
-});
