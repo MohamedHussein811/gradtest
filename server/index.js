@@ -5,7 +5,7 @@ require("@tensorflow-models/coco-ssd");
 require("@tensorflow/tfjs-backend-cpu");
 const cors = require("cors");
 const sharp = require("sharp");
-const tf = require("@tensorflow/tfjs");
+const tf = require("@tensorflow/tfjs-node");
 
 const cocoSsd = require("@tensorflow-models/coco-ssd");
 
@@ -70,16 +70,23 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   try {
     const imageBuffer = req.file.buffer;
 
+    const startTime = new Date();
+
+
+
     // Convert image buffer to tensor
-    const imageTensor = await sharp(imageBuffer)
-      .resize(300)
-      .raw()
-      .toBuffer({ resolveWithObject: true })
-      .then(({ data, info }) => {
-        return tf.tensor3d(data, [info.height, info.width, info.channels]);
-      });
+    const image = tf.node.decodeImage(imageBuffer, 3);
+    const imageTensor = tf.expandDims(image, 0);
+    
+
+    
 
     const predictions = await model.detect(imageTensor);
+
+    console.log("Predictions:", predictions);
+    const endTime = new Date();
+    const timeTaken = endTime - startTime;
+    console.log("Time taken:", timeTaken, "ms");
 
     // Send predictions back to the client
     res.json({ predictions });
