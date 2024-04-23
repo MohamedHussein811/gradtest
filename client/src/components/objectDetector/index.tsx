@@ -19,7 +19,7 @@ export function ObjectDetector() {
       const formData = new FormData();
       formData.append("image", file);
 
-      const response = await axios.post("http://localhost:5000/upload", formData);
+      const response = await axios.post("https://api-gradtest.vercel.app/upload", formData);
       
       const data = response.data;
       console.log("Predictions:", data.predictions);

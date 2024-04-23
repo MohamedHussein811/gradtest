@@ -53,10 +53,10 @@ async function loadModel() {
     process.exit(1);
   }
 }
-loadModel();
 
 app.post("/upload", upload.single("image"), async (req, res) => {
   try {
+    loadModel();
     const imageBuffer = req.file.buffer;
     if (!model) {
       return res.status(500).send("Model not loaded yet");
