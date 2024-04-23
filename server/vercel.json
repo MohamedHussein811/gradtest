@@ -2,5 +2,10 @@
     "version": 2,
     "builds": [{"src": "./index.js", "use":
      "@vercel/node"}],
-    "routes":[{"src": "/(.*)", "dest": "/"}]
+    "routes":[{"src": "/(.*)", "dest": "/"}],
+    "functions": {
+        "api/test.js": {
+          "maxDuration": 60
+        }
+      }
 }
