@@ -54,13 +54,13 @@ async function loadModel() {
   }
 }
 
-// Load the model when the server starts
-loadModel().catch(console.error);
-
 // Middleware to ensure model is loaded before handling requests
 app.use((req, res, next) => {
   if (!model) {
-    loadModel();
+    return res.status(503).json({
+      error: "Service Unavailable",
+      message: "Model is not loaded",
+    });
   }
   next();
 });
