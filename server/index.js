@@ -46,14 +46,23 @@ let model;
 async function loadModel() {
   try {
     model = await cocoSsd.load({});
-
     console.log("Model loaded");
   } catch (err) {
     console.error("Failed to load model", err);
+    // Exit the process if model loading fails
     process.exit(1);
   }
 }
-loadModel();
+
+// Wrap the server start in a function to ensure model loading completes before starting the server
+async function startServer() {
+  await loadModel();
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+startServer();
 
 app.post("/upload", upload.single("image"), async (req, res) => {
   try {
@@ -79,8 +88,4 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     console.error("Error occurred during object detection:", error);
     res.status(500).send("Internal Server Error");
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
 });
