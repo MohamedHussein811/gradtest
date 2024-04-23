@@ -60,7 +60,7 @@ loadModel().catch(console.error);
 // Middleware to ensure model is loaded before handling requests
 app.use((req, res, next) => {
   if (!model) {
-    return res.status(500).send("Model not loaded yet");
+    loadModel();
   }
   next();
 });
