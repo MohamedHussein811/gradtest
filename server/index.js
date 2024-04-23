@@ -89,7 +89,11 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+// Start the server only after the model is loaded
+loadModel().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}).catch(err => {
+  console.error('Failed to load model:', err);
 });
