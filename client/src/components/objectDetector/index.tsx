@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import axios from "axios"; 
+import axios from "axios";
 
 interface Prediction {
   bbox: number[];
@@ -14,27 +14,28 @@ export function ObjectDetector() {
   const onSelectImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
+    const startTime = new Date();
 
     try {
       const formData = new FormData();
       formData.append("image", file);
 
-      const startTime = new Date();
+      const response = await axios.post(
+        "https://api-gradtest.vercel.app/upload",
+        formData
+      );
 
-      const response = await axios.post("https://api-gradtest.vercel.app/upload", formData);
-      
       const data = response.data;
       console.log("Predictions:", data.predictions);
-
-      const endTime = new Date();
-      const timeTaken = Number(endTime) - Number(startTime);
-      console.log("Time taken:", timeTaken, "ms");
 
       setPredictions(data.predictions);
     } catch (error) {
       console.error("Error occurred while fetching predictions:", error);
       setPredictions([]);
     }
+    const endTime = new Date();
+    const timeTaken = Number(endTime) - Number(startTime);
+    console.log("Time taken:", timeTaken, "ms");
   };
 
   useEffect(() => {
@@ -47,7 +48,9 @@ export function ObjectDetector() {
         {predictions.length > 0 && (
           <ul>
             {predictions.map((prediction, index) => (
-              <li key={index}>{`${prediction.class} - Score: ${prediction.score}`}</li>
+              <li
+                key={index}
+              >{`${prediction.class} - Score: ${prediction.score}`}</li>
             ))}
           </ul>
         )}

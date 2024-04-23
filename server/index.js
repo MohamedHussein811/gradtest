@@ -70,15 +70,16 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
     const startTime = new Date();
 
-    // Convert image buffer to tensor
-    const imageTensor = await sharp(imageBuffer)
+    // Convert image buffer to tensor and resize
+    const { data, info } = await sharp(imageBuffer)
       .resize(300)
       .raw()
-      .toBuffer({ resolveWithObject: true })
-      .then(({ data, info }) => {
-        return tf.tensor3d(data, [info.height, info.width, info.channels]);
-      });
+      .toBuffer({ resolveWithObject: true });
 
+    // Convert image data to tensor
+    const imageTensor = tf.tensor3d(data, [info.height, info.width, info.channels]);
+
+    // Perform object detection
     const predictions = await model.detect(imageTensor);
 
     console.log("Predictions:", predictions);
