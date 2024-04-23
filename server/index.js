@@ -54,22 +54,21 @@ async function loadModel() {
   }
 }
 
-// Wrap the server start in a function to ensure model loading completes before starting the server
-async function startServer() {
-  await loadModel();
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT} 1`);
-  });
-}
+// Load the model when the server starts
+loadModel().catch(console.error);
 
-startServer();
+// Middleware to ensure model is loaded before handling requests
+app.use((req, res, next) => {
+  if (!model) {
+    return res.status(500).send("Model not loaded yet");
+  }
+  next();
+});
 
+// Route for uploading images and performing object detection
 app.post("/upload", upload.single("image"), async (req, res) => {
   try {
     const imageBuffer = req.file.buffer;
-    if (!model) {
-      return res.status(500).send("Model not loaded yet");
-    }
 
     // Convert image buffer to tensor
     const imageTensor = await sharp(imageBuffer)
@@ -88,4 +87,9 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     console.error("Error occurred during object detection:", error);
     res.status(500).send("Internal Server Error");
   }
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
