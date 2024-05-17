@@ -44,7 +44,7 @@ async function loadModel() {
     model = await tf.loadLayersModel(
       `https://drive.google.com/uc?export=download&id=1---irB8FRMYQR5uPWHaNB5kzN_Ifn8k7` // model.h5
     );
-    
+  
     console.log("Model loaded");
   } catch (err) {
     console.error("Failed to load model", err);
