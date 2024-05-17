@@ -41,16 +41,19 @@ let model;
 
 async function loadModel() {
   try {
+    // Load the model
     model = await tf.loadLayersModel(
-      `https://drive.google.com/uc?export=download&id=1---irB8FRMYQR5uPWHaNB5kzN_Ifn8k7` // model.h5
+      `https://drive.usercontent.google.com/download?id=11I0QYbqQYW_6nILna2JK3EjrEnvJz_6O&export=download&authuser=0&confirm=t&uuid=1e3edc1a-42a4-435d-906c-c3d45aa0e6a3&at=APZUnTWjMELb_J6jy-vMwI7Tn6ao:1715955699227`
     );
-  
+
     console.log("Model loaded");
   } catch (err) {
     console.error("Failed to load model", err);
     process.exit(1);
   }
 }
+
+
 
 // Middleware to ensure model is loaded before handling requests
 app.use((req, res, next) => {
