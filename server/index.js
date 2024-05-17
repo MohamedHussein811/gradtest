@@ -5,8 +5,6 @@ const cors = require("cors");
 const sharp = require("sharp");
 const tf = require("@tensorflow/tfjs");
 
-const cocoSsd = require("@tensorflow-models/coco-ssd");
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
@@ -43,11 +41,13 @@ let model;
 
 async function loadModel() {
   try {
-    model = await cocoSsd.load({});
+    model = await tf.loadLayersModel(
+      `https://drive.google.com/uc?export=download&id=1---irB8FRMYQR5uPWHaNB5kzN_Ifn8k7` // model.h5
+    );
+    
     console.log("Model loaded");
   } catch (err) {
     console.error("Failed to load model", err);
-    // Exit the process if model loading fails
     process.exit(1);
   }
 }
@@ -88,7 +88,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     ]);
 
     // Perform object detection
-    const predictions = await model.detect(imageTensor);
+    const predictions = await model.classify(imageTensor);
 
     console.log("Predictions:", predictions);
     const endTime = new Date();
